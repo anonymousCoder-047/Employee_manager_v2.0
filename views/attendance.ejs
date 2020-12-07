@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/headers') %>
+</head>
+<body>
+  <!-- header section -->
+  <%- include('partials/navbar', { isLoggedin: is_Loggedin, is_Admin: is_Admin, is_Manager: is_Manager }) %>
+  
+    <div class="uk-section">
+        <div class="uk-container">
+            <h3>Employee Attendance</h3>
+        </div>
+    </div>
+    
+    <div class="uk-container">
+        <div id="alertStatus" style="display: none;" class="uk-alert-primary" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p id="alertMessage">Form Messages.</p>
+        </div>
+
+        <% if(message === true) { %>
+            <script>
+                let message = '<%=msg%>';
+                M.toast({ html: message });
+            </script>
+        <% } %>
+
+        <ul class="uk-flex-center" uk-tab>
+            <li class="uk-active"><a href="#">Male</a></li>
+            <li><a href="#">Female</a></li>
+        </ul>
+        <ul class="uk-switcher uk-margin">
+            <li>
+                <table class="uk-table uk-table-striped">
+                    <thead>
+                        <tr>
+                            <th hidden>emp_id</th>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Month</th>
+                            <th>Day</th>
+                            <th>Morning Shift</th>
+                            <th>Afternoon Shift</th>
+                            <th>Absent</th>
+                        </tr>
+                    </thead>
+                    <tbody id="maleAttendanceData">
+                        <% for( let i=0; i < male.length; i++ ) { %>
+                            <tr>
+                                <td hidden id="emp_male_id_<%=i+1%>"><%=male[i].emp_id%></td>
+                                <td><%= i+1 %></td>
+                                <td id="emp_male_name_<%=i+1%>"><%= male[i].emp_name %></td>
+                                <td><input type="month" onchange="monthChange(this)" name="emp_male_month" id="emp_male_month_<%=i+1%>"></td>
+                                <td><input type="week" onchange="dayChange(this)" name="emp_male_day" id="emp_male_day_<%=i+1%>"></td>
+                                <td><input type="time" onchange="fnTimeChange(this)" name="emp_male_fn_time" id="emp_male_fn_time_<%=i+1%>"></td>
+                                <td><input type="time" onchange="anTimeChange(this)" name="emp_male_an_time" id="emp_male_an_time_<%=i+1%>"></td>
+                                <td><input type="text" onchange="attendance(this, 'emp_male_name_<%=i+1%>', 'emp_male_id_<%=i+1%>')" name="emp_male_attendance" id="emp_male_attendance_<%=i+1%>"></td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <table class="uk-table uk-table-striped">
+                    <thead>
+                        <tr>
+                            <th hidden>emp_id</th>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Month</th>
+                            <th>Day</th>
+                            <th>Morning Shift</th>
+                            <th>Afternoon Shift</th>
+                            <th>Present / Absent</th>
+                        </tr>
+                    </thead>
+                    <tbody id="femaleAttendanceData">
+                        <% for( let i=0; i < female.length; i++ ) { %>
+                            <tr>
+                                <td hidden id="emp_female_id_<%=i+1%>"><%=female[i].emp_id%></td>
+                                <td><%= i+1 %></td>
+                                <td id="emp_female_name_<%=i+1%>"><%= female[i].emp_name %></td>
+                                <td><input type="month" onchange="monthChange(this)" name="emp_month" id="emp_month_<%=i+1%>"></td>
+                                <td><input type="week" onchange="dayChange(this)" name="emp_day" id="emp_day_<%=i+1%>"></td>
+                                <td><input type="time" onchange="fnTimeChange(this)" name="emp_fn_time" id="emp_fn_time_<%=i+1%>"></td>
+                                <td><input type="time" onchange="anTimeChange(this)" name="emp_an_time" id="emp_an_time_<%=i+1%>"></td>
+                                <td><input type="text" onchange="attendance(this, 'emp_female_name_<%=i+1%>', 'emp_female_id_<%=i+1%>')" name="emp_female_attendance" id="emp_female_attendance_<%=i+1%>"></td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </li>
+        </ul>
+    </div>
+
+    <div class="uk-section">
+        <div class="uk-container"></div>
+    </div>
+    
+    <script>
+        let month_input;
+        let day_input;
+        let fn_time_input;
+        let an_time_input;
+        let present_input;
+        let emp_name;
+        let emp_id;
+
+        function monthChange(ele) {
+            let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+            "November", "December"];
+            month_input = document.getElementById(ele.id).value;
+        }
+
+        function dayChange(ele) {
+            let weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Staurday"];
+            day_input = document.getElementById(ele.id).value;
+        }
+
+        function fnTimeChange(ele) {
+            fn_time_input = document.getElementById(ele.id).value;
+        }
+
+        function anTimeChange(ele) {
+            an_time_input = document.getElementById(ele.id).value;
+        }
+
+        function attendance(ele, id, empID) {
+            emp_id = document.getElementById(empID).innerHTML;
+            emp_name = document.getElementById(id).innerHTML;
+            present_input = document.getElementById(ele.id).value;
+            daily_attendance()
+        }
+
+        function daily_attendance() {
+            let now = new Date();
+            let days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+            let m = ['january', 'febraury', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 
+                    'october', 'november', 'december'];
+            let year = month_input.split('-')[0];
+            let month_inp = month_input.split('-')[1];
+            let day = days[ now.getDay() ];
+            let month = m[ now.getMonth() ];
+            let date = now.getDate();
+            let data = {
+                "emp_id": emp_id,
+                "emp_name":emp_name,
+                "year":year,
+                "month":month,
+                "day":day,
+                "date":date,
+                "fn_time":fn_time_input,
+                "an_time":an_time_input,
+                "present":present_input
+            }
+            $.ajax({
+                url: '/attendance',
+                type: 'POST',
+                data: data,
+                complete: ((jqXHR, textStatus) => {
+                    $('#alertStatus').css('display', 'block');
+                    $('#alertStatus').toggleClass('uk-alert-information');
+                    $('#alertMessage').html('Attendance Saved Successfully '+textStatus);
+                    setTimeout(() => {
+                        $('#alertStatus').css('display', 'none');
+                    }, 3000);
+                }),
+                success: ((data, status) => {
+                    $('#alertStatus').css('display', 'block');
+                    $('#alertStatus').toggleClass('uk-alert-success');
+                    $('#alertMessage').html('Successful '+status);
+                    setTimeout(() => {
+                        $('#alertStatus').css('display', 'none');
+                    }, 3000);
+                }),
+                error: ((jqXHR, textStatus, errorThrown) => {
+                    if (jqXHR.status == 500) {          
+                        $('#alertStatus').css('display', 'block');
+                        $('#alertStatus').toggleClass('uk-alert-danger');
+                        $('#alertMessage').html('Internal Server Error! Please Try Again Later');
+                        setTimeout(() => {
+                            $('#alertStatus').css('display', 'none');
+                        }, 3000);
+                    } else {
+                        $('#alertStatus').css('display', 'block');
+                        $('#alertStatus').toggleClass('uk-alert-danger');
+                        $('#alertMessage').html('Error Url '+errorThrown);
+                        setTimeout(() => {
+                            $('#alertStatus').css('display', 'none');
+                        }, 3000);
+                    }
+                })
+            });
+            M.toast({ html:"Successful" });
+            
+        }
+
+        function maleAttendanceupdate(data) {
+            $.get('/attendance/male', (data, textStatus) => {
+                data.forEach((d, i) => {
+                    row += `<tr>
+                        <td hidden>${d._id}</td>
+                        <td>${i+1}</td>
+                        <td id="emp_male_name_${i+1}">${d.emp_name}</td>
+                        <td><input type="month" onchange="monthChange(this)" value="${d.month}" name="emp_male_month" id="emp_male_month_${i+1}"></td>
+                        <td><input type="week" onchange="dayChange(this)" value="${d.day}" name="emp_male_day" id="emp_male_day_${i+1}"></td>
+                        <td><input type="time" onchange="fnTimeChange(this)" value="${d.fn_time}" name="emp_male_fn_time" id="emp_male_fn_time_${i+1}"></td>
+                        <td><input type="time" onchange="anTimeChange(this)" value="${d.an_time}" name="emp_male_an_time" id="emp_male_an_time_${i+1}"></td>
+                        <td><input type="text" onchange="attendance(this, 'emp_male_name_${i+1}', 'emp_male_id_${i+1}')" value="${d.total_leaves}" name="emp_male_attendance" id="emp_male_attendance_${i+1}>"></td>
+                    </tr>`;
+                });
+                $('#maleAttendanceData').html(row);
+                M.toast({ html:"Upated Data!" });
+            });
+        }
+
+        function femaleAttendanceupdate(data) {
+            $.get('/attendance/female', (data, textStatus) => {
+                data.forEach((d, i) => {
+                    row += `<tr>
+                        <td hidden>${d._id}</td>
+                        <td>${i+1}</td>
+                        <td id="emp_female_name_${i+1}">${d.emp_name}</td>
+                        <td><input type="month" onchange="monthChange(this)" value="${d.month}" name="emp_month" id="emp_month_${i+1}"></td>
+                        <td><input type="week" onchange="dayChange(this)" value="${d.day}" name="emp_day" id="emp_day_${i+1}"></td>
+                        <td><input type="time" onchange="fnTimeChange(this)" value="${d.fn_time}" name="emp_fn_time" id="emp_fn_time_${i+1}"></td>
+                        <td><input type="time" onchange="anTimeChange(this)" value="${d.an_time}" name="emp_an_time" id="emp_an_time_${i+1}"></td>
+                        <td><input type="text" onchange="attendance(this, 'emp_female_name_${i+1}', 'emp_female_id_${i+1}')" value="${d.total_leaves}" name="emp_female_attendance" id="emp_female_attendance_${i+1}>"></td>
+                    </tr>`;
+                });
+                $('#femaleAttendanceData').html(row);
+                M.toast({ html:"Upated Data!" });
+            });
+        }
+    </script>
+  <!-- footer section -->
+  <%- include('partials/footer') %>
+</body>
+</html>

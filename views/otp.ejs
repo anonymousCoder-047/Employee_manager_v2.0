@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/headers') %>
+</head>
+<body>
+    <!-- header section -->
+    <%- include('partials/navbar', { isLoggedin: is_Loggedin, is_Admin: is_Admin, is_Manager: is_Manager }) %>
+    
+    <div class="uk-section uk-section-default">
+        <div class="uk-container">
+            <h1 style="text-align: center;">OTP</h1>
+        </div>
+    </div>
+    <% if(message === true) { %>
+        <script>
+            let message = '<%=msg%>';
+            M.toast({ html: message });
+        </script>
+    <% } %>
+    <div class="uk-column-1-2 uk-column-divider" style="padding-left: 30px;">
+        <form class="uk-form-horizontal uk-margin-large" method="POST" action="/otp">
+            <% if(id) { %>
+                <div class="uk-inline" hidden>
+                    <span class="uk-form-icon" uk-icon="icon: pencil"></span>
+                    <input class="uk-input" id="db_id" type="text" value="<%= id %>" name="db_id">
+                </div>
+            <% } %>
+            <div class="uk-margin">
+                <label class="uk-form-label" for="form-horizontal-text">OTP</label>
+                <div class="uk-form-controls">
+                    <input class="uk-input" id="form-horizontal-text" type="number" name="clientOtp" placeholder="Enter Your OTP">
+                </div>
+            </div>
+            <input type="submit" class="uk-button uk-button-default" value="submit">
+        </form>
+        <p>Please do not share your One Time Password with anyone.</p>
+    </div>
+
+    <div class="uk-section uk-section-default">
+        <div class="uk-container"></div>
+    </div>
+
+    <!-- footer section -->
+    <%- include('partials/footer') %>
+</body>
+</html>

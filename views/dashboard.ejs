@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/headers') %>
+</head>
+<body onload="calculate()">
+    <!-- header section -->
+    <%- include('partials/navbar', { isLoggedin: is_Loggedin, is_Admin: is_Admin, is_Manager: is_Manager }) %>
+    
+    <div class="uk-section">
+        <div class="uk-container">
+            <h3>Hello <%= user_name %>!</h3>
+        </div>
+    </div>
+
+    <!-- Admin's Dashboard -->
+    <% if( is_Admin === true ) { %>
+        <div class="uk-container">
+            <div class="uk-child-width-expand@s uk-text-center" uk-grid>
+                <div class="uk-grid-item-match">
+                    <div class="uk-card uk-card-secondary uk-card-body">
+                        <h3>Total Employee's</h3>
+                        <span uk-icon="icon: users"></span>
+                        <p><%= admin.total_employees %></p>
+                    </div>
+                </div>
+                <div class="uk-grid-item-match">
+                    <div class="uk-card uk-card-primary uk-card-body">
+                        <h3>Total Users's</h3>
+                        <span uk-icon="icon: users"></span>
+                        <p><%= admin.total_users %></p>
+                    </div>
+                </div>
+                <div class="uk-grid-item-match">
+                    <div class="uk-card uk-card-secondary uk-card-body">
+                        <h3>PF Employee's</h3>
+                        <span uk-icon="icon: users"></span>
+                        <p><%= admin.pf %></p>
+                    </div>
+                </div>
+                <div class="uk-grid-item-match">
+                    <div class="uk-card uk-card-primary uk-card-body">
+                        <h3>Non PF Employee's</h3>
+                        <span uk-icon="icon: users"></span>
+                        <p><%= admin.non_pf %></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } else { %>
+    <!-- Admin's Dashboard end -->
+
+    <!-- Users's Dashboard -->
+        <div class="uk-container">
+            <div class="uk-child-width-expand@s uk-text-center" uk-grid>
+                <div class="uk-grid-item-match">
+                    <div class="uk-card uk-card-secondary uk-card-body">
+                        <h3>Leaves</h3>
+                        <span uk-icon="icon: users"></span>
+                        <p><%= usr.total_leaves %></p> 
+                    </div>
+                </div>
+                <div class="uk-grid-item-match">
+                    <div class="uk-card uk-card-primary uk-card-body">
+                        <h3>Salary</h3>
+                        <span uk-icon="icon: users"></span>
+                        <p><%= usr.salary %></p>
+                    </div>
+                </div>
+                <div class="uk-grid-item-match">
+                    <div class="uk-card uk-card-secondary uk-card-body">
+                        <h3>Bonus</h3>
+                        <p>
+                            <i class="fa fa-inr"></i> 
+                            <% if(usr.total_leaves <= 15) { %>
+                                <%= usr.bonus %>
+                            <% } else { %>
+                                <%= 0 %>
+                            <% } %>
+                        </p>
+                    </div>
+                </div>
+                <div class="uk-grid-item-match">
+                    <div class="uk-card uk-card-primary uk-card-body">
+                        <h3>Last Payment</h3>
+                        <p><i class="fa fa-inr"></i> <%= usr.last_payment %></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- Users's Dashboard end -->
+
+    <!-- admin's Dashboard -->
+    <% if( is_Admin === true ) { %>
+        <div class="uk-container">
+            <div class="uk-margin-medium-top">
+                <ul class="uk-flex-center" uk-tab>
+                    <li class="uk-active"><a href="#">Salary Report</a></li>
+                    <li><a href="#">Details</a></li>
+                    <li><a href="#">Payment</a></li>
+                    <li><a href="#">Male</a></li>
+                    <li><a href="#">Female</a></li>
+                </ul>
+                <ul class="uk-switcher uk-margin">
+                    <li>
+                        <table class="uk-table uk-table-divider">
+                            <thead>
+                                <tr>
+                                    <th hidden>databse_id</th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Gender</th>
+                                    <th scope="col">Present</th>
+                                    <th scope="col">Leaves</th>
+                                    <th scope="col">PF / CASH</th>
+                                    <th scope="col">Salary</th>
+                                    <th scope="col">bonus</th>
+                                    <th scope="col">Total Salary</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for( let i=0; i < emp.length; i++ ) { %>
+                                    <tr>
+                                        <td hidden><%= emp[i]._id %></td>
+                                        <td><%= i+1 %></td>
+                                        <td><%= emp[i].emp_name %></td>
+                                        <td><%= emp[i].emp_gender %></td>
+                                        <td><%= (30 - (emp[i].emp_absent ? emp[i].emp_absent : 0)) %></td>
+                                        <td><%= emp[i].emp_absent ? emp[i].emp_absent : 0 %></td>
+                                        <td><%= emp[i].emp_pay_method %></td>
+                                        <td><%= emp[i].emp_salary %></td>
+                                        <td><% if(emp[i].emp_absent >= 15) { %>
+                                                <%= 0 %>
+                                            <% } else { %>
+                                                <%= emp[i].emp_incentive %>
+                                            <% } %>
+                                        </td>
+                                        <td id="emp_report_gr_total_<%= i+1 %>"><%= emp[i].emp_gr_total %></td>
+                                    </tr>
+                                <% } %>
+                                <tr style="background-color: black; color: white;">
+                                    <td colspan="1"></td>
+                                    <td colspan="5"></td>
+                                    <td colspan="3">Total Salary : <i class="fa fa-inr"></i> <span id="ttl_salary_report"> 0</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                    <li>
+                        <table class="uk-table uk-table-divider uk-table-small">
+                            <thead>
+                                <tr>
+                                    <th hidden>databse_id</th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Phone</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">DOB</th>
+                                    <th scope="col">Gender</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Blood Group</th>
+                                    <th scope="col">PF / CASH</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for( let i=0; i < emp.length; i++ ) { %>
+                                    <tr>
+                                        <td hidden><%= emp[i]._id %></td>
+                                        <td><%= i+1 %></td>
+                                        <td><%= emp[i].emp_name %></td>
+                                        <td><%= emp[i].emp_phone %></td>
+                                        <td><%= emp[i].emp_email %></td>
+                                        <td><%= emp[i].emp_dob %></td>
+                                        <td><%= emp[i].emp_gender %></td>
+                                        <td><%= emp[i].emp_address %></td>
+                                        <td><%= emp[i].emp_blood_group %></td>
+                                        <td><%= emp[i].emp_pay_method %></td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </li>
+                    <li>
+                        <div class="uk-flex uk-flex-left@s uk-flex-center@s uk-text-center" uk-grid>
+                            <% for( let i=0; i < emp.length; i++ ) { %>
+                                <div class="uk-card uk-card-default uk-card-body uk-width-1-2@m">
+                                    <div class="uk-card-badge uk-label"><%= emp[i].emp_pay_status ? emp[i].emp_pay_status : "pending" %></div>
+                                    <h3 class="uk-card-title"><%= emp[i].emp_name %></h3>
+                                    <p><i class="fa fa-inr"></i> <%= emp[i].emp_gr_total ? emp[i].emp_gr_total : 0 %></p>
+                                </div>
+                            <% } %>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="uk-flex uk-flex-right" style="padding-right: 35px;">
+                            <a class="uk-button" onclick="download_report()" href="#!">Download Report <span uk-icon="icon: download"></span></a>
+                        </div>
+                        <table id="emp_male_data" class="uk-table uk-table-divider">
+                            <thead>
+                                <tr>
+                                    <th hidden>databse_id</th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Gender</th>
+                                    <th scope="col">Present</th>
+                                    <th scope="col">Leaves</th>
+                                    <th scope="col">PF / CASH</th>
+                                    <th scope="col">Salary</th>
+                                    <th scope="col">bonus</th>
+                                    <th scope="col">Total Salary</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for( let i=0; i < emp.length; i++ ) { %>
+                                    <% if( emp[i].emp_gender === 'male' ) { %>
+                                        <tr>
+                                            <td hidden><%= emp[i]._id %></td>
+                                            <td><%= i+1 %></td>
+                                            <td><%= emp[i].emp_name %></td>
+                                            <td><%= emp[i].emp_gender %></td>
+                                            <td><%= (30 - (emp[i].emp_absent ? emp[i].emp_absent : 0)) %></td>
+                                            <td><%= emp[i].emp_absent ? emp[i].emp_absent : 0 %></td>
+                                            <td><%= emp[i].emp_pay_method %></td>
+                                            <td><%= emp[i].emp_salary %></td>
+                                            <td><% if(emp[i].emp_absent >= 15) { %>
+                                                    <%= 0 %>
+                                                <% } else { %>
+                                                    <%= emp[i].emp_incentive %>
+                                                <% } %>
+                                            </td>
+                                            <td id="emp_male_gr_total_<%= i+1 %>"><%= emp[i].emp_gr_total %></td>
+                                        </tr>
+                                    <% } %>
+                                <% } %>
+                                <tr style="background-color: black; color: white;">
+                                    <td colspan="1"></td>
+                                    <td colspan="5"></td>
+                                    <td colspan="3">Total Salary : <i class="fa fa-inr"></i> <span id="ttl_salary_male"> 0</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                    <li>
+                        <div class="uk-flex uk-flex-right" style="padding-right: 35px;">
+                            <a class="uk-button" onclick="download_female_report()" href="#!">Download Report <span uk-icon="icon: download"></span></a>
+                        </div>
+                        <table id="emp_female_data" class="uk-table uk-table-divider">
+                            <thead>
+                                <tr>
+                                    <th class="ignore" hidden>databse_id</th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Gender</th>
+                                    <th scope="col">Present</th>
+                                    <th scope="col">Leaves</th>
+                                    <th scope="col">PF / CASH</th>
+                                    <th scope="col">Salary</th>
+                                    <th scope="col">bonus</th>
+                                    <th scope="col">Total Salary</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for( let i=0; i < emp.length; i++ ) { %>
+                                    <% if( emp[i].emp_gender === 'female' ) { %>
+                                        <tr>
+                                            <td hidden><%= emp[i]._id %></td>
+                                            <td><%= i+1 %></td>
+                                            <td><%= emp[i].emp_name %></td>
+                                            <td><%= emp[i].emp_gender %></td>
+                                            <td><%= (30 - (emp[i].emp_absent ? emp[i].emp_absent : 0)) %></td>
+                                            <td><%= emp[i].emp_absent ? emp[i].emp_absent : 0 %></td>
+                                            <td><%= emp[i].emp_pay_method %></td>
+                                            <td><%= emp[i].emp_salary %></td>
+                                            <td><% if(emp[i].emp_absent >= 15) { %>
+                                                    <%= 0 %>
+                                                <% } else { %>
+                                                    <%= emp[i].emp_incentive %>
+                                                <% } %>
+                                            </td>
+                                            <td id="emp_female_gr_total_<%= i+1 %>"><%= emp[i].emp_gr_total %></td>
+                                        </tr>
+                                    <% } %>
+                                <% } %>
+                                <tr style="background-color: black; color: white;">
+                                    <td colspan="1"></td>
+                                    <td colspan="5"></td>
+                                    <td colspan="3">Total Salary : <i class="fa fa-inr"></i> <span id="ttl_salary_female"> 0</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    <% } else { %>
+
+        <!-- Admin's Dashboard end -->
+
+        <!-- user's Dashboard -->
+
+        <div class="uk-container">
+            <div class="uk-margin-medium-top">
+                <ul class="uk-flex-center" uk-tab>
+                    <li class="uk-active"><a href="#">Profile</a></li>
+                    <li><a href="#">Attendance</a></li>
+                    <li><a href="#">Last Payment</a></li>
+                </ul>
+                <ul class="uk-switcher uk-margin">
+                    <li>
+                        <ul class="uk-list uk-list-divider">
+                            <li><span>Name :</span> <%= user_name %></li>
+                            <li><span>Email :</span> <%= usr.email %></li>
+                            <li><span>Phone :</span> <%= usr.phone %></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <table class="uk-table uk-table-divider">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Present</th>
+                                    <th>Total Leaves</th>
+                                    <th>Salary</th>
+                                    <th>Bonus</th>
+                                    <th>Last Payment</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td><%= usr.attendance %></td>
+                                    <td><%= usr.total_leaves %></td>
+                                    <td><%= usr.salary %></td>
+                                    <td><% if(usr.total_leaves <= 15) { %>
+                                            <%= usr.bonus %>
+                                        <% } else { %>
+                                            <%= 0 %>
+                                        <% } %>
+                                    </td>
+                                    <td><%= usr.last_payment %></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                    <li>
+                        <div class="uk-flex">
+                            <div class="uk-card uk-card-default uk-card-body uk-width-1-2@m">
+                                <div class="uk-card-badge uk-label"><%= usr.pay_status ? usr.pay_status : "pending" %></div>
+                                <h3 class="uk-card-title"><%= user_name %></h3>
+                                <p><i class="fa fa-inr"></i> <%= usr.last_payment %></p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    <% } %>
+    <!-- Users's Dashboard end -->
+
+    <div class="uk-section">
+        <div class="uk-container">
+        </div>
+    </div>
+
+    <script>
+        function download_report() {
+            $('#emp_male_data').table2excel({
+                name: 'Employee MALE Report',
+                filename: 'employee_male_report',
+                preserveColors: true,
+                fileext: ".xlsx"
+            });
+        }
+
+        function download_female_report() {
+            $('#emp_female_data').table2excel({
+                name: 'Employee FEMALE Report',
+                filename: 'employee_female_report',
+                preserveColors: true
+            });
+        }
+
+        function calculate() {
+            let empSalaryReport = document.getElementById('ttl_salary_report');
+            let empSalaryMale = document.getElementById('ttl_salary_male');
+            let empSalaryFemale = document.getElementById('ttl_salary_female');
+            let empIdReport = document.querySelectorAll("[id^='emp_report_gr_total_']");
+            let empIdMale = document.querySelectorAll("[id^='emp_male_gr_total_']");
+            let empIdFemale = document.querySelectorAll("[id^='emp_female_gr_total_']");
+            let ttl_salary_report = 0;
+            let ttl_salary_male = 0;
+            let ttl_salary_female = 0;
+
+            empIdReport.forEach( doc => {
+                let emp_salary_report = parseInt(document.getElementById(doc.id).innerHTML);
+                ttl_salary_report += emp_salary_report;
+            });
+            empSalaryReport.innerHTML = ttl_salary_report;
+
+            empIdMale.forEach( doc => {
+                let emp_salary_male = parseInt(document.getElementById(doc.id).innerHTML);
+                ttl_salary_male += emp_salary_male;
+            });
+            empSalaryMale.innerHTML = ttl_salary_male;
+
+            empIdFemale.forEach( doc => {
+                let emp_salary_female = parseInt(document.getElementById(doc.id).innerHTML);
+                ttl_salary_female += emp_salary_female;
+            });
+            empSalaryFemale.innerHTML = ttl_salary_female;
+        }
+    </script>
+
+    <!-- footer section -->
+    <%- include('partials/footer') %>
+</body>
+</html>

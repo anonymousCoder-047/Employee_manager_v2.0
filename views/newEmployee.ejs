@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/headers') %>
+</head>
+<body>
+    <!-- header section -->
+    <%- include('partials/navbar', { isLoggedin: is_Loggedin, is_Admin: is_Admin, is_Manager: is_Manager }) %>
+
+    <div class="uk-section">
+        <div class="uk-container">
+            <h3>Register New User</h3>
+        </div>
+    </div>
+    <div class="uk-container">
+        <div id="alertStatus" style="display: none;" class="uk-alert-primary" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p id="alertMessage">Form Messages.</p>
+        </div>
+        <% if(message === true) { %>
+            <script>
+                let message = '<%=msg%>';
+                M.toast({ html: message });
+            </script>
+        <% } %>
+        <form id="empForm">
+            <div class="uk-grid-small" uk-grid>
+                <div class="uk-inline">
+                    <span class="uk-form-icon" uk-icon="icon: hashtag"></span>
+                    <input class="uk-input" id="emp_id" type="text" placeholder="Employee ID" name="emp_id">
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon" uk-icon="icon: hashtag"></span>
+                    <input class="uk-input" id="emp_acct" type="number" placeholder="Employee Bank Acct no" name="emp_acct">
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon" uk-icon="icon: pencil"></span>
+                    <input class="uk-input" id="emp_name" type="text" placeholder="Employee Name" name="emp_name">
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon" uk-icon="icon: phone"></span>
+                    <input class="uk-input" id="emp_phone" type="number" placeholder="Employee Phone no" name="emp_phone">
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon" uk-icon="icon: mail"></span>
+                    <input class="uk-input" id="emp_email" type="email" placeholder="Employee Email" name="emp_email">
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon"><i class="fa fa-venus"></i></span>
+                    <select class="uk-select" id="emp_gender" style="padding-left: 30px;" name="emp_gender">
+                        <option value="male">MALE</option>
+                        <option value="female">FEMALE</option>
+                    </select>
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon" uk-icon="icon: calendar"></span>
+                    <input class="uk-input" id="emp_dob" type="date" placeholder="dd/mm/yyy" name="emp_dob">
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon" uk-icon="icon: calendar"></span>
+                    <input class="uk-input" id="emp_join_date" type="date" placeholder="dd/mm/yyy" name="emp_join_date">
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon" uk-icon="icon: paint-bucket"></span>
+                    <input class="uk-input" id="emp_blood_group" type="text" placeholder="A+" name="emp_blood_group">
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon" uk-icon="icon: location"></span>
+                    <input class="uk-input" id="emp_address" type="text" placeholder="India, Karnataka, bhatkal" name="emp_address">
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon"><i class="fa fa-table"></i></span>
+                    <input class="uk-input" id="emp_counter" type="text" placeholder="Employee Counter" name="emp_counter">
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon"><i class="fa fa-briefcase"></i></span>
+                    <input class="uk-input" id="emp_job_role" type="text" placeholder="Employee Job Role" name="emp_job_role">
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon"><i class="fa fa-inr"></i></span>
+                    <input class="uk-input" id="emp_salary" type="number" onchange="salary_check(this)" placeholder="9000" name="emp_salary">
+                </div>
+                <div class="uk-inline" id="ttl_salary">
+                    <span class="uk-form-icon"><i class="fa fa-inr"></i></span>
+                    <input class="uk-input" id="emp_ttl_salary" type="number" value="0" name="emp_ttl_salary">
+                </div>
+                <div class="uk-inline" id="pf_tax">
+                    <span class="uk-form-icon"><i class="fa fa-inr"></i></span>
+                    <input class="uk-input" id="emp_pf_tax" type="number" value="200" name="emp_pf_tax">
+                </div>
+                <div class="uk-inline" id="pf_per">
+                    <span class="uk-form-icon"><i class="fa fa-inr"></i></span>
+                    <input class="uk-input" id="emp_pf_per" type="number" value="12" name="emp_pf_per">
+                </div>
+                <div class="uk-inline" id="esic_per">
+                    <span class="uk-form-icon"><i class="fa fa-inr"></i></span>
+                    <input class="uk-input" id="emp_esic_per" type="number" value="0.75" name="emp_esic_per">
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon" uk-icon="icon: credit-card"></span>
+                    <select class="uk-select" onchange="pay_method_check(this)" id="emp_pay_method" style="padding-left: 30px;" name="emp_pay_method">
+                        <option value="cash">CASH</option>
+                        <option value="pf">PF</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+        <button id="formSubmit" onclick="registerEMP()" class="uk-button uk-button-default" style="margin-top: 30px;">submit</button>
+    </div>
+    <div class="uk-section">
+        <div class="uk-container"></div>
+    </div>
+
+    <script>
+        
+        let esic = document.getElementById('esic_per');
+        esic.style.display = 'none';
+        let pf = document.getElementById('pf_per');
+        pf.style.display = 'none';
+        let p_tax = document.getElementById('pf_tax');
+        p_tax.style.display = 'none';
+        let ttl_salary = document.getElementById('ttl_salary');
+        ttl_salary.style.display = 'none';
+
+        let esic_val = parseFloat(document.getElementById('emp_esic_per').value);
+        let pf_val = parseInt(document.getElementById('emp_pf_per').value);
+        let pf_tax_val = parseInt(document.getElementById('emp_pf_tax').value);
+
+        function salary_check(ele) {
+            let salary = parseInt(document.getElementById(ele.id).value);
+            let pay_method = document.getElementById('emp_pay_method').value;
+            if( pay_method === 'cash' && salary<14999 ) {
+                esic.style.display = 'none';
+                pf.style.display = 'none';
+                p_tax.style.display = 'none';
+                ttl_salary.style.display = 'none';
+                document.getElementById('emp_ttl_salary').value = parseFloat(salary);
+                M.toast({ html:"Values Updated." });
+            } else if( pay_method === 'cash' && salary>14999 ) {
+                esic.style.display = 'none';
+                pf.style.display = 'none';
+                ttl_salary.style.display = 'block';
+                p_tax.style.display = 'block';
+                document.getElementById('emp_ttl_salary').value = parseFloat(salary - pf_tax_val);
+                M.toast({ html:"Values Updated." });
+            } else if( pay_method === 'pf' && salary<14999 ) {
+                let tax = ((salary*pf_val)/100 + (salary*esic_val)/100);
+                esic.style.display = 'block';
+                pf.style.display = 'block';
+                ttl_salary.style.display = 'block';
+                document.getElementById('emp_ttl_salary').value = parseFloat(salary - tax);
+                p_tax.style.display = 'none';
+                M.toast({ html:"Values Updated." });
+            } else if( pay_method === 'pf' && salary>14999 ) {
+                let tax = ((salary*pf_val)/100 + (salary*esic_val)/100);
+                esic.style.display = 'block';
+                pf.style.display = 'block';
+                p_tax.style.display = 'block';
+                ttl_salary.style.display = 'block';
+                document.getElementById('emp_ttl_salary').value = parseFloat((salary - tax) - pf_tax_val);
+                M.toast({ html:"Values Updated." });
+            }
+        }
+
+        function pay_method_check(ele) {
+            let pay_method = document.getElementById(ele.id).value;
+            let salary = parseInt(document.getElementById('emp_salary').value);
+            if( pay_method === 'cash' && salary<14999 ) {
+                esic.style.display = 'none';
+                pf.style.display = 'none';
+                p_tax.style.display = 'none';
+                ttl_salary.style.display = 'none';
+                document.getElementById('emp_ttl_salary').value = parseFloat(salary);
+                M.toast({ html:"Values Updated." });
+            } else if( pay_method === 'cash' && salary>14999 ) {
+                esic.style.display = 'none';
+                pf.style.display = 'none';
+                ttl_salary.style.display = 'block';
+                p_tax.style.display = 'block';
+                document.getElementById('emp_ttl_salary').value = parseInt(salary - pf_tax_val);
+                M.toast({ html:"Values Updated." });
+            } else if( pay_method === 'pf' && salary<14999 ) {
+                let tax = ((salary*pf_val)/100 + (salary*esic_val)/100);
+                esic.style.display = 'block';
+                pf.style.display = 'block';
+                ttl_salary.style.display = 'block';
+                document.getElementById('emp_ttl_salary').value = parseFloat(salary - tax);
+                p_tax.style.display = 'none';
+                M.toast({ html:"Values Updated." });
+            } else if( pay_method === 'pf' && salary>14999 ) {
+                let tax = ((salary*pf_val)/100 + (salary*esic_val)/100);
+                esic.style.display = 'block';
+                pf.style.display = 'block';
+                p_tax.style.display = 'block';
+                ttl_salary.style.display = 'block';
+                document.getElementById('emp_ttl_salary').value = parseFloat((salary - tax) - pf_tax_val);
+                M.toast({ html:"Values Updated." });
+            }
+        }
+
+        function validateForm() {
+            let form = document.getElementsByTagName('input');
+
+            if( form.emp_acct.value === '' || form.emp_name.value === '' || form.emp_email.value === '' || form.emp_dob.value === ''
+                || form.emp_join_date.value === '' || form.emp_blood_group.value === '' || form.emp_address.value === '' || form.emp_counter.value === ''
+                || form.emp_job_role.value === '' || form.emp_salary.value === '' ) {
+                $('#alertStatus').css('display', 'block');
+                $('#alertStatus').toggleClass('uk-alert-danger');
+                $('#alertStatus').html('Please Fill the Form');
+                setTimeout(() => {
+                    $('#alertStatus').css('display', 'none');
+                }, 1000);
+                return false;
+            }
+            return true;
+        }
+
+        function registerEMP() {
+            let res = validateForm();
+            let data = {
+                emp_id: $('#emp_id').val(),
+                emp_acct: $('#emp_acct').val(),
+                emp_name: $('#emp_name').val(),
+                emp_phone: $('#emp_phone').val(),
+                emp_email: $('#emp_email').val(),
+                emp_gender: $('#emp_gender').val(),
+                emp_dob: $('#emp_dob').val(),
+                emp_join_date: $('#emp_join_date').val(),
+                emp_blood_group: $('#emp_blood_group').val(),
+                emp_address: $('#emp_address').val(),
+                emp_counter: $('#emp_counter').val(),
+                emp_job_role: $('#emp_job_role').val(),
+                emp_salary: $('#emp_salary').val(),
+                emp_pay_method: $('#emp_pay_method').val(),
+                emp_pf_per: $('#emp_pf_per').val(),
+                emp_esic_per: $('#emp_esic_per').val(),
+                emp_pf_tax: $('#emp_pf_tax').val(),
+                emp_ttl_salary: $('#emp_ttl_salary').val()
+            }
+
+            if( res === true ) {
+                $.ajax({
+                    url: '/newEMP',
+                    type: 'POST',
+                    data: data,
+                    complete: ((jqXHR, textStatus) => {
+                        $('#alertStatus').css('display', 'block');
+                        $('#alertStatus').toggleClass('uk-alert-information');
+                        $('#alertMessage').html('Employee Registered Successfully'+textStatus);
+                        setTimeout(() => {
+                            $('#alertStatus').css('display', 'none');
+                        }, 3000);
+                    }),
+                    success: ((data, status) => {
+                        $('#alertStatus').css('display', 'block');
+                        $('#alertStatus').toggleClass('uk-alert-success');
+                        $('#alertMessage').html('Successfully Updated Data '+status);
+                        $('#empForm')[0].reset();
+                        setTimeout(() => {
+                            $('#alertStatus').css('display', 'none');
+                        }, 1000);
+                    }),
+                    error: ((jqXHR, textStatus, errorThrown) => {
+                        if (jqXHR.status == 500) {          
+                            $('#alertStatus').css('display', 'block');
+                            $('#alertStatus').toggleClass('uk-alert-danger');
+                            $('#alertMessage').html('Internal Server Error! Please Try Again Later');
+                            setTimeout(() => {
+                                $('#alertStatus').css('display', 'none');
+                            }, 1000);
+                        } else {
+                            $('#alertStatus').css('display', 'block');
+                            $('#alertStatus').toggleClass('uk-alert-danger');
+                            $('#alertMessage').html('Error Url '+errorThrown);
+                            setTimeout(() => {
+                                $('#alertStatus').css('display', 'none');
+                            }, 1000);
+                        }
+                    })
+                });
+                M.toast({ html:"Employee Registered" });
+            }
+        }
+    </script>
+
+    <!-- footer section -->
+    <%- include('partials/footer') %>
+</body>
+</html>

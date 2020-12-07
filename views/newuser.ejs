@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/headers') %>
+</head>
+<body>
+    <!-- header section -->
+    <%- include('partials/navbar', { isLoggedin: is_Loggedin, is_Admin: is_Admin, is_Manager: is_Manager }) %>
+
+    <div class="uk-section">
+        <div class="uk-container">
+            <h3>Register New User</h3>
+        </div>
+    </div>
+    <div class="uk-container">
+        <div id="alertStatus" style="display: none;" class="uk-alert-primary" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p id="alertMessage">Form Messages.</p>
+        </div>
+        <% if(message === true) { %>
+            <script>
+                let message = '<%=msg%>';
+                M.toast({ html: message });
+            </script>
+        <% } %>
+        <form method="POST" action="/register">
+            <div class="uk-grid-small" uk-grid>
+                <div class="uk-inline">
+                    <span class="uk-form-icon" uk-icon="icon: user"></span>
+                    <input class="uk-input" id="usr_name" type="text" placeholder="your name" name="usr_name" required>
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon" uk-icon="icon: mail"></span>
+                    <input class="uk-input" id="usr_email" type="email" placeholder="your email" name="usr_email" required>
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                    <input class="uk-input" id="usr_password" type="password" placeholder="**********" name="usr_password">
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                    <input class="uk-input" id="usr_c_password" type="password" onchange="passwdCheck(this, usr_password)" placeholder="**********" name="usr_c_password">
+                </div>
+                <div class="uk-inline">
+                    <span class="uk-form-icon" uk-icon="icon: briefcase"></span>
+                    <select class="uk-select" id="usr_role" style="padding-left: 30px;" name="usr_role">
+                        <option value="admin">admin</option>
+                        <option value="manager">manager</option>
+                    </select>
+                </div>
+            </div>
+            <input id="formSubmit" type="submit" class="uk-button uk-button-default" style="margin-top: 30px;" value="submit">
+        </form>
+    </div>
+    <div class="uk-section">
+        <div class="uk-container"></div>
+    </div>
+
+    <script>
+        function passwdCheck(ele, id) {
+            let cpasswd = document.getElementById(ele.id).value;
+            let passwd = document.getElementById(id).value;
+            
+            if(passwd === cpasswd) {
+                $('#alertStatus').css('display', 'block');
+                $('#alertStatus').toggleClass('uk-alert-success');
+                $('#alertStatus').html('Password Matched');
+                setTimeout(() => {
+                    $('#alertStatus').css('display', 'none');
+                }, 1000);
+            } else {
+                $('#alertStatus').css('display', 'block');
+                $('#alertStatus').toggleClass('uk-alert-danger');
+                $('#alertStatus').html('Password doesnt Match');
+                setTimeout(() => {
+                    $('#alertStatus').css('display', 'none');
+                }, 1000);
+            }
+        }
+    </script>
+
+    <!-- footer section -->
+    <%- include('partials/footer') %>
+</body>
+</html>

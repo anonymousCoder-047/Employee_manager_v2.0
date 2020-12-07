@@ -1,0 +1,49 @@
+<div class="uk-position-relative">
+    <img src="/public/assets/images/navbar.jpg" style="width: 100%;height: 80px;" alt="Anfal_Hyper_Market">
+    <div class="uk-position-top">
+        <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
+            <div class="uk-navbar-right">
+                <ul class="uk-navbar-nav">
+                    <% if( isLoggedin === false ) { %>
+                        <li class="uk-active white"><a href="/" style="color: white;">Home</a></li>
+                        <li><a href="/login" style="color: white;">Login</a></li>
+                    <% } else if( is_Admin === true ) { %>
+                        <li>
+                            <a href="/dashboard" style="color: white;">Dashboard</a>
+                            <div class="uk-navbar-dropdown">
+                                <ul class="uk-nav uk-navbar-dropdown-nav">
+                                    <li class="uk-active"><a href="/dashboard">Dashboard</a></li>
+                                    <li><a href="/register">New User</a></li>
+                                    <li><a href="/pf_report">PF Report</a></li>
+                                    <li><a href="/cash_report">Cash Report</a></li>
+                                    <li class="uk-nav-header"><a href="/employees">Employees</a></li>
+                                    <li><a href="/newEMP">Add Emp</a></li>
+                                    <li><a href="/modifyEMP">Modify Emp</a></li>
+                                    <li><a href="/attendance">Attendance</a></li>
+                                    <li class="uk-nav-divider"></li>
+                                    <li><a href="/settings">Stteings</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><a href="/logout" style="color: white;">Logout</a></li>
+                    <% } else if( is_Manager === true ) { %>
+                        <li>
+                            <a href="#" style="color: white;">Dashboard</a>
+                            <div class="uk-navbar-dropdown">
+                                <ul class="uk-nav uk-navbar-dropdown-nav">
+                                    <li class="uk-active"><a href="/dashboard">Dashboard</a></li>
+                                    <li><a href="/newEMP">Add Emp</a></li>
+                                    <li><a href="/attendance">Attendance</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><a href="/logout" style="color: white;">Logout</a></li>
+                    <% } else { %>
+                        <li><a href="/dashboard" style="color: white;">Dashboard</a></li>   
+                        <li><a href="/logout" style="color: white;">Logout</a></li> 
+                    <% } %>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>

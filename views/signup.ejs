@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/headers') %>
+</head>
+<body>
+    <!-- header section -->
+    <%- include('partials/navbar', { isLoggedin: is_Loggedin, is_Admin: is_Admin, is_Manager: is_Manager }) %>
+    
+    <div class="uk-section uk-section-default">
+        <div class="uk-container">
+            <h1>Signup</h1>
+        </div>
+    </div>
+
+    <% if(message === true) { %>
+        <script>
+            let message = '<%=msg%>';
+            M.toast({ html: message });
+        </script>
+    <% } %>
+
+    <div class="uk-container">
+        <div class="uk-column">
+            <form method="POST" action="/signup">
+                <div class="uk-margin">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: user"></span>
+                        <input class="uk-input" type="text" placeholder="user name" name="user_name" required>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: mail"></span>
+                        <input class="uk-input" type="email" placeholder="example@example.com" name="user_email" required>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
+                        <input class="uk-input" type="password" placeholder="********" name="user_password" required>
+                    </div>
+                </div>
+                <input type="submit" class="uk-button uk-button-default" value="submit">
+            </form>
+            <a href="/login" class="uk-button uk-button-defaul">have account?</a>
+        </div>
+    </div>
+
+    <div class="uk-section uk-section-default">
+        <div class="uk-container"></div>
+    </div>
+
+    <!-- footer section -->
+    <%- include('partials/footer') %>
+</body>
+</html>

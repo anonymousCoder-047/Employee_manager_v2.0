@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/headers') %>
+</head>
+<body onload="calculate()">
+  <!-- header section -->
+  <%- include('partials/navbar', { isLoggedin: is_Loggedin, is_Admin: is_Admin, is_Manager: is_Manager }) %>
+  
+    <div class="uk-section">
+        <div class="uk-container">
+            <h3>Employee Cash Report</h3>
+        </div> 
+    </div>
+    
+    <div class="uk-container">
+        <div class="uk-flex uk-flex-right" style="padding-right: 35px;">
+            <a class="uk-button" id="printBtn" onclick="download_report()" href="#!">Download Report <span uk-icon="icon: download" ></span></a>
+        </div>
+        <table class="uk-table uk-table-small uk-table-striped uk-table-hover" id="emp_table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Acct No</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>DOB</th>
+                    <th>Join Date</th>
+                    <th>Blood Group</th>
+                    <th>Pay Method</th>
+                    <th>Salary</th>
+                    <th>Bonus</th>
+                    <th>Gr Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for( let i=0; i < emp.length; i++ ) { %>
+                    <tr>
+                        <td><%= i+1 %></td>
+                        <td><%= emp[i].emp_acct %></td>
+                        <td><%= emp[i].emp_name %></td>
+                        <td><%= emp[i].emp_phone %></td>
+                        <td><%= emp[i].emp_email %></td>
+                        <td><%= emp[i].emp_dob %></td>
+                        <td><%= emp[i].emp_join_date %></td>
+                        <td><%= emp[i].emp_blood_group %></td>
+                        <td><%= emp[i].emp_pay_method %></td>
+                        <td><%= emp[i].emp_salary %></td>
+                        <td><%= emp[i].emp_incentive %></td>
+                        <td id="emp_gr_total_<%= i+1 %>"><%= emp[i].emp_gr_total %></td>
+                    </tr>
+                <% } %>
+                <tr style="background-color: black; color: white;">
+                    <td></td>
+                    <td colspan="8"></td>
+                    <td colspan="4">Total Salary : <i class="fa fa-inr"></i> <span id="ttl_salary"> 0</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="uk-section">
+        <div class="uk-container"></div>
+    </div>
+
+    <script>
+        function download_report() {
+            $('#emp_table').table2excel({
+                name: 'Employee Cash Report',
+                filename: 'employee_cash_report',
+                preserveColors: true
+            });
+        }
+
+        function calculate() {
+            let empSalary = document.getElementById('ttl_salary');
+            let empId = document.querySelectorAll("[id^='emp_gr_total_']");
+            let ttl_salary = 0;
+            empId.forEach( doc => {
+                let emp_salary = parseInt(document.getElementById(doc.id).innerHTML);
+                ttl_salary += emp_salary;
+            });
+            empSalary.innerHTML = ttl_salary;
+        }
+    </script>
+
+  <!-- footer section -->
+  <%- include('partials/footer') %>
+</body>
+</html>

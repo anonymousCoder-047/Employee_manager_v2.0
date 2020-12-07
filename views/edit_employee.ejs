@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/headers') %>
+</head>
+<body id="result">
+  <!-- header section -->
+  <%- include('partials/navbar', { isLoggedin: is_Loggedin, is_Admin: is_Admin, is_Manager: is_Manager }) %>
+    
+  <div class="uk-section">
+    <div class="uk-container">
+        <h3>Employee's Details</h3>
+    </div>
+  </div>
+
+  <div class="uk-container">
+    <div id="alertStatus" style="display: none;" class="uk-alert-primary" uk-alert>
+        <a class="uk-alert-close" uk-close></a>
+        <p id="alertMessage">Form Messages.</p>
+    </div>
+    <% if(message === true) { %>
+        <script>
+            let message = '<%=msg%>';
+            M.toast({ html: message });
+        </script>
+    <% } %>
+    <table class="uk-table uk-table-divider">
+        <thead>
+            <tr>
+                <th hidden>databse_id</th>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Present</th>
+                <th scope="col">Leaves</th>
+                <th scope="col">PF / CASH</th>
+                <th scope="col">Salary</th>
+                <th scope="col">bonus</th>
+                <th scope="col">Total Salary</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead> 
+        <tbody id="empData">
+            <% for( let i=0; i < emp.length; i++ ) { %>
+                <tr>
+                    <td hidden><%= emp[i]._id %></td>
+                    <td><%= i+1 %></td>
+                    <td><%= emp[i].emp_name %></td>
+                    <td><%= emp[i].emp_gender %></td>
+                    <td><%= (30 - (emp[i].emp_absent ? emp[i].emp_absent : 0)) %></td>
+                    <td><%= emp[i].emp_absent ? emp[i].emp_absent : 0 %></td>
+                    <td><%= emp[i].emp_pay_method %></td>
+                    <td><%= emp[i].emp_salary %></td>
+                    <td><script>document.write(Math.round('<%=(emp[i].emp_salary)/30*2%>'));</script></td>
+                    <td><%= emp[i].emp_gr_total %></td>
+                    <td><a uk-toggle="target: #modify_<%=i+1%>" type="button"><span uk-icon="pencil"></span></a></td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+    <% for( let i=0; i<emp.length; i++ ) { %>
+        <div id="modify_<%=i+1%>" uk-modal>
+            <div class="uk-modal-dialog uk-modal-body">
+                <h2 class="uk-modal-title"><%= emp[i].emp_name %></h2>
+                <div class="uk-grid-small" uk-grid>
+                    <div class="uk-inline" hidden>
+                        <span class="uk-form-icon" uk-icon="icon: hashtag"></span>
+                        <input class="uk-input" id="db_id_<%=i+1%>" type="text" value="<%= emp[i]._id %>" name="emp_db_id">
+                    </div>
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: hashtag"></span>
+                        <input class="uk-input" id="emp_acct_<%=i+1%>" type="number" value="<%= emp[i].emp_acct %>" placeholder="xxx9888" name="emp_acct">
+                    </div>
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: pencil"></span>
+                        <input class="uk-input" id="emp_name_<%=i+1%>" type="text" value="<%= emp[i].emp_name %>" placeholder="your name" name="emp_name">
+                    </div>
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: mail"></span>
+                        <input class="uk-input" id="emp_email_<%=i+1%>" type="email" value="<%= emp[i].emp_email %>" placeholder="example@example.com" name="emp_mail">
+                    </div>
+                    <div class="uk-inline">
+                        <span class="uk-form-icon"><i class="fa fa-venus"></i></span>
+                        <select class="uk-select" id="emp_gender_<%=i+1%>" style="padding-left: 30px;" name="emp_gender">
+                            <option value="<%= emp[i].emp_gender %>"><%= emp[i].emp_gender %></option>
+                            <option value="male">MALE</option>
+                            <option value="female">FEMALE</option>
+                        </select>
+                    </div>
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: calendar"></span>
+                        <input class="uk-input" id="emp_dob_<%=i+1%>" type="date" value="<%= emp[i].emp_dob %>" placeholder="dd/mm/yyy" name="emp_dob">
+                    </div>
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: calendar"></span>
+                        <input class="uk-input" id="emp_join_date_<%=i+1%>" type="date" value="<%= emp[i].emp_join_date %>" placeholder="dd/mm/yyy" name="emp_join_date">
+                    </div>
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: paint-bucket"></span>
+                        <input class="uk-input" id="emp_blood_group_<%=i+1%>" type="text" value="<%= emp[i].emp_blood_group %>" placeholder="A+" name="emp_blood_group">
+                    </div>
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: location"></span>
+                        <input class="uk-input" id="emp_address_<%=i+1%>" type="text" value="<%= emp[i].emp_address %>" placeholder="India, Karnataka, bhatkal" name="emp_address">
+                    </div>
+                    <div class="uk-inline">
+                        <span class="uk-form-icon"><i class="fa fa-table"></i></span>
+                        <input class="uk-input" id="emp_counter_<%=i+1%>" type="text" value="<%= emp[i].emp_counter %>" placeholder="bakery" name="emp_counter">
+                    </div>
+                    <div class="uk-inline">
+                        <span class="uk-form-icon"><i class="fa fa-briefcase"></i></span>
+                        <input class="uk-input" id="emp_job_role_<%=i+1%>" type="text" value="<%= emp[i].emp_job_role %>" placeholder="sales" name="emp_job_role">
+                    </div>
+                    <div class="uk-inline">
+                        <span class="uk-form-icon"><i class="fa fa-inr"></i></span>
+                        <input class="uk-input" id="emp_salary_<%=i+1%>" type="number" value="<%= emp[i].emp_salary %>" onchange="salary_check(this,'<%=i+1%>')" placeholder="9000" name="emp_salary">
+                    </div>
+                    <div class="uk-inline" id="ttl_salary_<%=i+1%>">
+                        <span class="uk-form-icon"><i class="fa fa-inr"></i></span>
+                        <input class="uk-input" id="emp_ttl_salary_<%=i+1%>" type="number" value="<%= emp[i].emp_gr_total %>" value="0" name="emp_ttl_salary">
+                    </div>
+                    <div class="uk-inline" id="pf_tax_<%=i+1%>">
+                        <span class="uk-form-icon"><i class="fa fa-inr"></i></span>
+                        <input class="uk-input" id="emp_pf_tax_<%=i+1%>" type="number" value="200" name="emp_pf_tax">
+                    </div>
+                    <div class="uk-inline" id="pf_per_<%=i+1%>">
+                        <span class="uk-form-icon"><i class="fa fa-inr"></i></span>
+                        <input class="uk-input" id="emp_pf_per_<%=i+1%>" type="number" value="12" name="emp_pf_per">
+                    </div>
+                    <div class="uk-inline" id="esic_per_<%=i+1%>">
+                        <span class="uk-form-icon"><i class="fa fa-inr"></i></span>
+                        <input class="uk-input" id="emp_esic_per_<%=i+1%>" type="number" value="0.75" name="emp_esic_per">
+                    </div>
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: credit-card"></span>
+                        <select class="uk-select" onchange="pay_method_check(this,'<%=i+1%>')" id="emp_pay_method_<%=i+1%>" style="padding-left: 30px;" name="emp_pay_method">
+                            <option value="<%= emp[i].emp_pay_method %>"><%= emp[i].emp_pay_method %></option>
+                            <option value="cash">CASH</option>
+                            <option value="pf">PF</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="uk-text-right">
+                    <button class="uk-button uk-button-default uk-modal-close" type="button" onclick="updateData('<%=i+1%>')">Close</button>
+                    <button class="uk-button uk-button-primary" onclick="modifyEMP('<%=i+1%>')" type="button">Save</button>
+                </p>
+            </div>
+        </div>    
+    <% } %>
+  </div>
+
+<div class="uk-section">
+    <div class="uk-container"></div>
+</div>
+<script>
+    
+    function salary_check(ele, id) {
+        let esic_id = 'esic_per_'+id;
+        let esic = document.getElementById(esic_id);
+        let pf_id = 'pf_per_'+id;
+        let pf = document.getElementById(pf_id);
+        let p_tax_id = 'pf_tax_'+id;
+        let p_tax = document.getElementById(p_tax_id);
+        let ttl_salary_id = 'ttl_salary_'+id;
+        let ttl_salary = document.getElementById(ttl_salary_id);
+        let emp_salary_id = 'emp_ttl_salary_'+id;
+        let emp_ttl_salary = document.getElementById(emp_salary_id);
+
+        let esic_val = parseFloat(document.querySelector('[id^=emp_esic_per_'+id+']').value);
+        let pf_val = parseInt(document.querySelector('[id^=emp_pf_per_'+id+']').value);
+        let pf_tax_val = parseInt(document.querySelector('[id^=emp_pf_tax_'+id+']').value);
+        let salary = parseInt(document.getElementById(ele.id).value);
+        let pay_method = document.querySelector('[id^=emp_pay_method_'+id+']').value.toLowerCase();
+        
+        if( pay_method === 'cash' && salary<14999 ) {
+            esic.style.display = 'none';
+            pf.style.display = 'none';
+            p_tax.style.display = 'none';
+            ttl_salary.style.display = 'none';
+            emp_ttl_salary.value = Math.round(parseFloat(salary));
+            M.toast({ html:"Values Updated." });
+        } else if( pay_method === 'cash' && salary>14999 ) {
+            esic.style.display = 'none';
+            pf.style.display = 'none';
+            ttl_salary.style.display = 'block';
+            p_tax.style.display = 'block';
+            emp_ttl_salary.value = Math.round(parseFloat(salary - pf_tax_val));
+            M.toast({ html:"Values Updated." });
+        } else if( pay_method === 'pf' && salary<14999 ) {
+            let tax = ((salary*pf_val)/100 + (salary*esic_val)/100);
+            esic.style.display = 'block';
+            pf.style.display = 'block';
+            ttl_salary.style.display = 'block';
+            emp_ttl_salary.value = Math.round(parseFloat(salary - tax));
+            p_tax.style.display = 'none';
+            M.toast({ html:"Values Updated." });
+        } else if( pay_method === 'pf' && salary>14999 ) {
+            let tax = ((salary*pf_val)/100 + (salary*esic_val)/100);
+            esic.style.display = 'block';
+            pf.style.display = 'block';
+            p_tax.style.display = 'block';
+            ttl_salary.style.display = 'block';
+            emp_ttl_salary.value = Math.round(parseFloat((salary - tax) - pf_tax_val));
+            M.toast({ html:"Values Updated." });
+        }
+    }
+
+    function pay_method_check(ele, id) {
+        let esic_id = 'esic_per_'+id;
+        let esic = document.getElementById(esic_id);
+        let pf_id = 'pf_per_'+id;
+        let pf = document.getElementById(pf_id);
+        let p_tax_id = 'pf_tax_'+id;
+        let p_tax = document.getElementById(p_tax_id);
+        let ttl_salary_id = 'ttl_salary_'+id;
+        let ttl_salary = document.getElementById(ttl_salary_id);
+        let emp_salary_id = 'emp_ttl_salary_'+id;
+        let emp_ttl_salary = document.getElementById(emp_salary_id);
+
+        let esic_val = parseFloat(document.querySelector('[id^=emp_esic_per_'+id+']').value);
+        let pf_val = parseInt(document.querySelector('[id^=emp_pf_per_'+id+']').value);
+        let pf_tax_val = parseInt(document.querySelector('[id^=emp_pf_tax_'+id+']').value);
+        let pay_method = document.getElementById(ele.id).value.toLowerCase();
+        let salary = parseInt(document.querySelector('[id^=emp_salary_'+id+']').value);
+
+        if( pay_method === 'cash' && salary<14999 ) {
+            esic.style.display = 'none';
+            pf.style.display = 'none';
+            p_tax.style.display = 'none';
+            ttl_salary.style.display = 'none';
+            emp_ttl_salary.value = Math.round(parseFloat(salary));
+            M.toast({ html:"Values Updated." });
+        } else if( pay_method === 'cash' && salary>14999 ) {
+            esic.style.display = 'none';
+            pf.style.display = 'none';
+            ttl_salary.style.display = 'block';
+            p_tax.style.display = 'block';
+            emp_ttl_salary.value = Math.round(parseInt(salary - pf_tax_val));
+            M.toast({ html:"Values Updated." });
+        } else if( pay_method === 'pf' && salary<14999 ) {
+            let tax = ((salary*pf_val)/100 + (salary*esic_val)/100);
+            esic.style.display = 'block';
+            pf.style.display = 'block';
+            ttl_salary.style.display = 'block';
+            emp_ttl_salary.value = Math.round(parseFloat(salary - tax));
+            p_tax.style.display = 'none';
+            M.toast({ html:"Values Updated." });
+        } else if( pay_method === 'pf' && salary>14999 ) {
+            let tax = ((salary*pf_val)/100 + (salary*esic_val)/100);
+            esic.style.display = 'block';
+            pf.style.display = 'block';
+            p_tax.style.display = 'block';
+            ttl_salary.style.display = 'block';
+            emp_ttl_salary.value = Math.round(parseFloat((salary - tax) - pf_tax_val));
+            M.toast({ html:"Values Updated." });
+        }
+    }
+
+    function validateForm() {
+        let form = document.getElementsByTagName('input');
+
+        if( form.emp_acct.value === '' || form.emp_name.value === '' || form.emp_mail.value === '' || form.emp_dob.value === ''
+            || form.emp_join_date.value === '' || form.emp_blood_group.value === '' || form.emp_address.value === '' || form.emp_counter.value === ''
+            || form.emp_job_role.value === '' || form.emp_salary.value === '' ) {
+            $('#alertStatus').css('display', 'block');
+            $('#alertStatus').toggleClass('uk-alert-danger');
+            $('#alertStatus').html('Please Fill the Form');
+            setTimeout(() => {
+                $('#alertStatus').css('display', 'none');
+            }, 1000);
+            return false;
+        }
+        return true;
+    }
+
+    function modifyEMP(id) {
+        let res = validateForm();
+        let db_id = "#db_id_"+id;
+        let e_acct = "#emp_acct_"+id;
+        let e_name = "#emp_name_"+id;
+        let e_mail = "#emp_mail_"+id;
+        let e_gender = "#emp_gender_"+id;
+        let e_dob = "#emp_dob_"+id;
+        let e_join = "#emp_join_date_"+id;
+        let e_group = "#emp_blood_group_"+id;
+        let e_addr = "#emp_address_"+id;
+        let e_counter = "#emp_counter_"+id;
+        let e_role = "#emp_job_role_"+id;
+        let e_sal = "#emp_salary_"+id;
+        let e_method = "#emp_pay_method_"+id;
+        let e_pf = "#emp_pf_per_"+id;
+        let e_es = "#emp_esic_per_"+id;
+        let e_pt = "#emp_pf_tax_"+id;
+        let e_ttl = "#emp_ttl_salary_"+id;
+
+        let data = {
+            db_id: $(db_id).val(),
+            emp_acct: $(e_acct).val(),
+            emp_name: $(e_name).val(),
+            emp_mail: $(e_mail).val(),
+            emp_gender: $(e_gender).val(),
+            emp_dob: $(e_dob).val(),
+            emp_join_date: $(e_join).val(),
+            emp_blood_group: $(e_group).val(),
+            emp_address: $(e_addr).val(),
+            emp_counter: $(e_counter).val(),
+            emp_job_role: $(e_role).val(),
+            emp_salary: $(e_sal).val(),
+            emp_pay_method: $(e_method).val(),
+            emp_pf_per: $(e_pf).val(),
+            emp_esic_per: $(e_es).val(),
+            emp_pf_tax: $(e_pt).val(),
+            emp_ttl_salary: $(e_ttl).val()
+        }
+
+        if( res === true ) {
+            $.ajax({
+                url: '/modifyEMP',
+                type: 'POST',
+                data: data,
+                complete: ((jqXHR, textStatus) => {
+                    M.toast({ html:"Employee Updated Successfully!"+textStatus });
+                }),
+                success: ((data, status) => {
+                    M.toast({ html:"Updating..."+status });
+                }),
+                error: ((jqXHR, textStatus, errorThrown) => {
+                    if (jqXHR.status == 500) {          
+                        M.toast({ html:"Internal Server Error!" });
+                    } else {
+                        M.toast({ html:"Error Updateding!"+textStatus });
+                    }
+                })
+            });
+        }
+    }
+
+    function updateData(id) {
+        $.get('/modifyEMP/employees', (data, textStatus) => {
+            let row;
+            data.forEach((d, i) => {
+                row += `<tr>
+                    <td hidden>${d._id}</td>
+                    <td>${i+1}</td>
+                    <td>${d.emp_name}</td>
+                    <td>${d.emp_gender ? d.emp_gender : ""}</td>
+                    <td>${30 - (d.emp_absent ? d.emp_absent : 0)}</td>
+                    <td>${d.emp_absent ? d.emp_absent : 0}</td>
+                    <td>${d.emp_pay_method}</td>
+                    <td>${d.emp_salary}</td>
+                    <td>${d.emp_incentive ? d.emp_incentive : Math.round(d.emp_salary/30*2)}</td>
+                    <td>${d.emp_gr_total ? d.emp_gr_total : 0}</td>
+                    <td><a uk-toggle="target: #modify_${i+1}" type="button"><span uk-icon="pencil"></span></a></td>
+                </tr>`;
+            });
+            $('#empData').html(row);
+            M.toast({ html:"Upated Data!" });
+        });
+    }
+    
+</script>
+<!-- footer section -->
+<%- include('partials/footer') %>
+</body>
+</html>

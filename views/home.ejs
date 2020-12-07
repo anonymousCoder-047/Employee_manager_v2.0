@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/headers') %>
+</head>
+<body>
+  <!-- header section -->
+  <%- include('partials/navbar', { isLoggedin: is_Loggedin, is_Admin: is_Admin, is_Manager: is_Manager }) %>
+
+  <div class="uk-section uk-section-default">
+    <div class="uk-container">
+        <h1 style="text-align: center;">Employee Management System</h1>
+    </div>
+  </div>
+
+  <div class="uk-height-large uk-background-cover uk-overflow-hidden uk-light uk-flex uk-flex-top" 
+      style="background-image: url('/public/assets/images/background.jpg');">
+      <div class="uk-width-1-2@m uk-text-center uk-margin-auto uk-margin-auto-vertical">
+          <h1 uk-parallax="opacity: 0,1; y: -100,0; scale: 2,1; viewport: 0.5;">ANFAL HYPER MARKET</h1>
+          <p uk-parallax="opacity: 0,1; y: 100,0; scale: 0.5,1; viewport: 0.5;">Shop with us to get more quality products and more variety.</p>
+      </div>
+  </div>
+  
+  <div class="uk-section uk-section-default">
+    <div class="uk-container">
+
+        <h2>Our Features</h2>
+
+        <div class="uk-grid-match uk-child-width-1-3@m" uk-grid>
+            <div>
+                <p>Once you’ve implemented our software, experience error-free processing of salaries in just a click.</p>
+            </div>
+            <div>
+                <p>Define and customize salary structures to meet employee categories and industry standards.</p>
+            </div>
+            <div>
+                <p>Automate reimbursements, loans, and advances for better employee experiences.</p>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="uk-child-width-1-2@m uk-grid-match" uk-grid>
+    <div>
+        <div class="uk-card uk-card-default uk-card-body" uk-scrollspy="cls: uk-animation-slide-left; repeat: true">
+            <h3 class="uk-card-title">Add Employee</h3>
+            <p>Enables you to add new Employee.</p>
+        </div>
+    </div>
+    <div>
+        <div class="uk-card uk-card-default uk-card-body" uk-scrollspy="cls: uk-animation-slide-right; repeat: true">
+          <h3 class="uk-card-title">Manage Employees</h3>
+          <p>Enables you to manage your Employees.</p>
+        </div>
+    </div>
+    <div>
+      <div class="uk-card uk-card-default uk-card-body" uk-scrollspy="cls: uk-animation-slide-left; repeat: true">
+        <h3 class="uk-card-title">Manage Salary</h3>
+        <p>Enables you to define employee salary.</p>
+      </div>
+  </div>
+  <div>
+      <div class="uk-card uk-card-default uk-card-body" uk-scrollspy="cls: uk-animation-slide-right; repeat: true">
+        <h3 class="uk-card-title">Manage Attendance</h3>
+        <p>Enables you to mark Employee's Attendance.</p>
+      </div>
+  </div>
+  <div>
+    <div class="uk-card uk-card-default uk-card-body" uk-scrollspy="cls: uk-animation-slide-left; repeat: true">
+        <h3 class="uk-card-title">Calculate Advance</h3>
+        <p>Enables you to calculate Employee's Advances.</p>
+    </div>
+    </div>
+    <div>
+        <div class="uk-card uk-card-default uk-card-body" uk-scrollspy="cls: uk-animation-slide-right; repeat: true">
+          <h3 class="uk-card-title">Manage Leaves</h3>
+          <p>Enables you to manage your Employee's Leaves.</p>
+        </div>
+    </div>
+  </div>
+
+  <div class="uk-section uk-section-default">
+    <div class="uk-container">
+        <h2>our work</h2>
+        <div class="uk-child-width-1-3@m uk-grid-small uk-grid-match" uk-grid>
+            <div>
+                <div class="uk-card uk-card-default uk-card-body uk-animation-slide-bottom">
+                    <h3 class="uk-card-title"><span class="uk-margin-small-right" uk-icon="code"></span></h3>
+                    <p>1500 Lines of Code.</p>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-primary uk-card-body uk-animation-slide-top">
+                    <h3 class="uk-card-title"><span class="uk-margin-small-right" uk-icon="clock"></span></h3>
+                    <p>150 hrs of Coding.</p>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-secondary uk-card-body uk-animation-slide-bottom">
+                    <h3 class="uk-card-title"><span class="uk-margin-small-right" uk-icon="thumbnails"></span></h3>
+                    <p>user friendly design.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="uk-container">
+      <div class="uk-section uk-section-default">
+        <h3>Our Portfolio</h3>
+      </div>
+  </div>
+
+  <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slideshow>
+    <ul class="uk-slideshow-items">
+        <li>
+            <img src="/public/assets/images/image-1.jpg" uk-cover>
+        </li>
+        <li>
+            <img src="/public/assets/images/image-2.jpg" uk-cover>
+        </li>
+        <li>
+            <img src="/public/assets/images/image-3.jpg" uk-cover>
+        </li>
+        <li>
+            <img src="/public/assets/images/image-4.jpg" uk-cover>
+        </li>
+        <li>
+            <img src="/public/assets/images/image-5.jpg" uk-cover>
+        </li>
+        <li>
+            <img src="/public/assets/images/image-6.jpg" uk-cover>
+        </li>
+    </ul>
+    <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slideshow-item="previous"></a>
+    <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slideshow-item="next"></a>
+  </div>
+
+  <!-- footer section -->
+  <%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/headers') %>
+</head>
+<body>
+    <!-- header section -->
+    <%- include('partials/navbar', { isLoggedin: is_Loggedin, is_Admin: is_Admin, is_Manager: is_Manager }) %>
+    
+    <div class="uk-section uk-section-default">
+        <div class="uk-container">
+            <h1>Login</h1>
+        </div>
+    </div>
+
+    <% if(message === true) { %>
+        <script>
+            let message = '<%=msg%>';
+            M.toast({ html: message });
+        </script>
+    <% } %>
+
+    <div class="uk-container">
+        <div class="uk-column">
+            <form method="POST" action="/login">
+                <div class="uk-margin">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: user"></span>
+                        <input class="uk-input" type="email" placeholder="your email" name="user_email" required>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
+                        <input class="uk-input" type="password" placeholder="*******" name="user_password" required>
+                    </div>
+                </div>
+                <input type="submit" class="uk-button uk-button-default" value="submit">
+            </form>
+            <a href="/forget" class="uk-button uk-button-defaul">forgot password</a>
+            <a href="/signup" class="uk-button uk-button-defaul">Register</a>
+        </div>
+    </div>
+
+    <div class="uk-section uk-section-default">
+        <div class="uk-container"></div>
+    </div>
+
+    <!-- footer section -->
+    <%- include('partials/footer') %>
+</body>
+</html>
